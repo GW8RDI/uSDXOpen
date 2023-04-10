@@ -8,6 +8,8 @@ Aim: To develop and support the uSDX firmware for all common versions of uSDX fr
 Improvements: The first improvement was to resolve distortion occuring on SSB TX audio caused by quadrature flipping and other issues.
 Following that, the code was ammended to track the mode (USB, LSB, CW) and frequency last used on each band, also to allow the menu to cycle rather than forcing users to go all the way back and forth, and to enable by-directional band changes by changing the frrequency up or down, and then double clicking the rotary encoder to change band in the desired direction, which with 8 band units was needed.
 Other changes such as easy model configuration, custom call-sign display on the LCD, etc., are detailed on the ino file itself.
+Enjoy your rig using this firmware! 73, Rob GW8RDI
+
 Use of this firmware is at the user's own risk. No warranty is provided although effort will be given where available to help all users.
 
 Reproduced from the original project:-
