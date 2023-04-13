@@ -35,6 +35,7 @@ For the receiver, most parts are implemented in digital manner (software): the A
 
 This experiment is created to try out what is can be achieved with minimal hardware while moving complexity towards software; here the approach followed is to simplify the design where possible while keep a reasonable performance. The result is a cheap, easy to build, versatile QRP SSB transceiver that actually is quite suitable for making QSOs (even in contest situations), however due to the experimental nature some parts are still in progress and hence limited. Feel free to try it out or to experiment with this sketch, let me know your thoughts or contribute here: https://github.com/threeme3/usdx
 
-Note: there is an active online forum discussing the uSDX here: uSDX Forum.
+Note: there is an active online forum discussing the uSDX controlled by DL2MAN who has closed his own USDX branch (tr)usdx.
+Other groups on FB include "USDX USDR Radios", "(tr)USDX Open".
 
 73, Guido pe1nnz@amsat.org
