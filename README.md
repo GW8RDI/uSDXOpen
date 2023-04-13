@@ -13,7 +13,7 @@ We're also looking at developing a voice interface (voice recognition and text t
 Enjoy using this firmware, constructive criticism always welcome!
 73, Rob GW8RDI
 
-Legal basis for the distribution of modified open source firware based on the original license conditions:
+Legal basis for the distribution of modified open source firmware based on the original license conditions:
 1. Constitutional right of artistic expression. 2. Consumer law rights to distribute self-modified products, hardware and own or open-source modified software, and share that information openly.
 Original license terms:-
 "// QCX-SSB.ino - https://github.com/threeme3/QCX-SSB
