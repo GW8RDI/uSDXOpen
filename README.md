@@ -15,6 +15,7 @@ Enjoy using this firmware, constructive criticism always welcome!
 
 Legal basis for the distribution of modified open source firmware based on the original license conditions:
 1. Constitutional right of artistic expression. 2. Consumer law rights to distribute self-modified products, hardware and own or open-source modified software, and share that information openly.
+
 Original license terms:-
 "// QCX-SSB.ino - https://github.com/threeme3/QCX-SSB
 // Copyright 2019, 2020, 2021 Guido PE1NNZ <pe1nnz@amsat.org>
