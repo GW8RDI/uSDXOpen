@@ -13,8 +13,6 @@ We're also looking at developing a voice interface (voice recognition and text t
 Enjoy using this firmware, constructive criticism always welcome!
 73, Rob GW8RDI
 
-Use of this firmware is at the user's own risk. No warranty is provided although effort will be given where available to help all users.
-
 Legal basis for the distribution of modified open source firware based on the original license conditions:
 1. Constitutional right of artistic expression. 2. Consumer law rights to distribute self-modified products, hardware and own or open-source modified software, and share that information openly.
 Original license terms:-
@@ -25,6 +23,8 @@ to deal in the Software without restriction, including without limitation the ri
 and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 "
+Use of this modified firmware is at the user's own risk. No warranty is provided although effort will be given where available to help all users.
+
 Reproduced from the original project:-
 
 uSDX is a simple and experimental (Class-E driven) SSB and CW SDR transceiver. It can be used to make QRP SSB contacts, or (in combination with a PC) used for the digital modes such as FT8, JS8, FT4. It can be fully-continuous tuned through bands 80m-10m in the LSB/USB-modes with a 2400Hz bandwidth has up to 5W PEP SSB output and features a software-based full Break-In VOX for fast RX/TX switching in voice and digital operations.
