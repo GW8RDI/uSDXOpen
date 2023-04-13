@@ -1,5 +1,5 @@
 # uSDXOpen
-Open firmware for all versions of the uSDX transceiver
+GW8RDI's Open firmware branch for all versions of the uSDX transceiver, built on original USDX open code.
 Branched from https://github.com/threeme3/usdx  Copyright 2019, 2020, 2021   Guido PE1NNZ <pe1nnz@amsat.org>
 Credits: Guido PE1NNZ, Dan Tayloe N7VE (http://norcalqrp.org/files/Tayloe_mixer_x3a.pdf), DL2MAN, and many others
 FB Groups: "usdx usdr radios", "usdx", "(tr)usdx Open"
