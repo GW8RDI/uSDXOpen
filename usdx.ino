@@ -8,6 +8,18 @@
 // THIS CODE SUPERCEEDS VERSIONS 1.02X AND 1.03. 1.03 HAS UPDATES FOR OLED CHPSETS BUT DOES NOT HAVE FUNCTIONAL OR DSP CHANGES COMPARED TO 1.02w.
 
 // GW8RDI IMPORTANT NOTES: ***   DO NOT RUSH - READ THE NOTES BELOW SEVERAL TIMES!
+
+// *** THIS OPEN SOFTWARE IS FULLY SUPPORTED* FREE OF COST BY GW8RDI and others ***
+
+/*
+Comfigured for (tr)usdx clone:
+
+Compile results 17 April 2023
+"C:\\Users\\User\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\avr-gcc\\7.3.0-atmel3.6.1-arduino7/bin/avr-size" -A "C:\\Users\\Usuario\\AppData\\Local\\Temp\\arduino\\sketches\\E2EA2B2706C6565E78832871CCAA7296/usdx.ino.elf"
+Sketch uses 32244 bytes (99%) of program storage space. Maximum is 32256 bytes.
+Global variables use 1499 bytes (73%) of dynamic memory, leaving 549 bytes for local variables. Maximum is 2048 bytes.
+*/
+
 // *** ISP DATA CORRUPTION WARNING1!!   ALWAYS REMOVE C24 (C27?) (or as marked) it's a 10nF on the ISP HEADER'S MOSI line (PA ctrl out) (PB3) of the ISP header,
 //  and disconnect the internal mic by plugging in a disconnected Jack plug.  FAILING TO DO THIS CAN CORRUPT YOUR MCU CHIP!!
 
@@ -23,9 +35,9 @@
 
 /*  WELCOME TO THE OPEN SOURCE USDX PROJECT 2022 AND ONWARDS!
 
-	This version is for all uSDX/uSDR transceivers, release numbers are 2.XXx.
+	This version is for all uSDX/uSDR transceivers, release numbers are 4.XXx.
 
-	Compiled and programmed using Arudino IDE 2.0.3, available from www.arduinio.cc
+	Compiled and programmed using Arudino IDE 2.0.4, available from www.arduinio.cc
 
 	To support the add-on module for uSDX with powerful DSP processor, version numbers will be 3.XXx.
 
@@ -38,7 +50,7 @@
 */
 
 //  G8RDI Modifications log:
-#define VERSION   "4.00b"    // Fixed format "9.99z" : Additions and changes Copyright 2022-2023 GW8RDI - You can use and distribute if you maintain the copyright message, commercial use is prohibited.
+#define VERSION   "4.00c"    // Fixed format "9.99z" : Additions and changes Copyright 2022-2023 GW8RDI - You can use and distribute if you maintain the copyright message, commercial use is prohibited.
 
 //  2022/03/04 - Added delay to show serial number at start - G8RDI mod
 //               Added band change direction based on last freq step directions. See "case BE | DC:" - GW8RDI mod
@@ -67,6 +79,7 @@
 //                               Re-coded KEEP_BAND_DATA switch statements which freed 328 bytes!!
 //  2023/04/11 - Release 4.00b : Fixed CAT mode change to allow it to select AM and FM, AM important to correctly track IQ flip. Also commented-out redundant BE | DC for mode change, as now used for directional band change.
 //                               RIT mode now allows mode to be changed.
+//  2023/04/17 - Release 4.00c : (UPDATE-2) Ammended configuration for TRUSDX clone so that latched-relay band switching and SWR selection is included.
 
 //  : Added new post mag IQ filter, added BlackBrick config.
 //  : todo see "// xyzzy Test with i_d"
@@ -92,23 +105,20 @@
 */
 // NOTE: ONLY ENABLE ONE OF THE MODELS BELOW BY ADDING OR REMOVING THE UNCOMMENT "//"
 //________________________________________________________________________________________________________________________
-//#define BLACK_BRICK 1   // Backlight control PortD is PD3 0x08, SWR, NO ROTARY SWAP
+#define BLACK_BRICK 1   // Backlight control PortD is PD3 0x08, SWR, NO ROTARY SWAP
 
-#define RED_CORNERS 1 // Backlight control PortD is PD3 0x08, or PD5 0x20 for Red Corners rig. Disable for Red and White buttons and most black brick uSDX.
-
-
+//#define RED_CORNERS 1 // Backlight control PortD is PD3 0x08, or PD5 0x20 for Red Corners rig. Disable for Red and White buttons and most black brick uSDX.
 
 // !!!!! ALWAYS DISABLE LINE BELOW !!!!!!
-#define MY_RED_CORNERS 1	// Only for my(GW8RDI) Red Corners with reversed rotary part!
+///#define MY_RED_CORNERS 1	// Only for my(GW8RDI) Red Corners with reversed rotary part!
 // !!!!! ALWAYS DISABLE LINE ABOVE !!!!!!
-
-
 
 //#define RED_BUTTONS 1 // Used for Small HF SDR TRANSCEIVER uSDX model, without SWR circuit.  May have SMD inductors.
 
 //#define WHITE_BUTTONS 1 // Small black unit with white or red buttons on front, without SWR circuit.
 
-//#define TRUSDX 1 // Small unit marked "DL2MAN & PE1NNZ".  CHECK WITH GW8RDI BEFORE USING THIS FOR UPDATES AND CONFIG DINFOETAILS!
+//#define TRUSDX 1 // Small USDX clone in 3D printed case marked "DL2MAN & PE1NNZ".  CHECK WITH GW8RDI BEFORE USING THIS FOR UPDATES AND CONFIG DETAILS!  SWR protection via PA sensing resistor can be added if needed.
+// NOTE:  DL2MAN claims (as of 17 April 2023) that his license blocks users from installing other software (Microsoft vs Linux et al), but it is understood that this violates consumer rights laws in the USA, UK and European Union.
 
 // *** NOTE ***: If none of the above are enabled, configuration may match other units, but if tuning direction is reversed, backlight or frequency wrong, adjust as needed.
 // IF IN DOUBT PLEASE ASK ME FIRST: GW8RDI
@@ -120,7 +130,9 @@
 #define BACKLIGHT_PIN 0x08
 #endif
 
+#ifndef TRUSDX
 #define KEEP_BAND_DATA 1        // Maintain last freq and mode set on each band - GW8RDI mod
+#endif
 
 #define SHOW_USB_LSB_CW_ONLY 1  // If defined, Menu will only cycle thro these 3 modes
 
@@ -138,13 +150,17 @@
 #ifdef DEBUG_G8RDI
 #define MY_CALLSIGN_PADDED "DEBUG  "
 #else
-#define MY_CALLSIGN "G8RDI"               // Add your callsign here or enable line below, replacing G8RDI!  If you don´t want the LCD to show your callsign, enable the line "uSDR+" below.
-//#define MY_CALLSIGN "G8RDI"
-#define MY_CALLSIGN_PADDED "G8RDI  "      // Also add your callsign here BUT keep the 2 spaces at the end!
-//#define MY_CALLSIGN_PADDED "uSDR+  "    // Ensure two spaces at end of heading and that it is under 7 characters (including the 2 spaces), or this program may not work correctly.
+// Put your callsigne below and remove the "///" in front to activate.
+///#define MY_CALLSIGN "G8RDI"               // <----- Add your callsign here or enable line below, replacing G8RDI!  If you don´t want the LCD to show your callsign, enable the line "uSDR+" below.
+
+///#define MY_CALLSIGN_PADDED "G8RDI  "      // <----- Also add your callsign here BUT keep the 2 spaces at the end!
+/// Disable below line if using your own callsign by adding // in front.
+#define MY_CALLSIGN_PADDED "uSDR+  "    // Ensure two spaces at end of heading and that it is under 7 characters (including the 2 spaces), or this program may not work correctly.
+
 //#define MY_PREFIX ""  // No prefix, use this line by removing the //, add below to replica line.
 #define MY_PREFIX ""    // Add visiting country prefix here
-#define MY_NAME "ROB"
+
+#define MY_NAME "ROB"   // <---- *** ADD YOUR NAME HERE FOR CW MESSAGES
 #endif
 #define CALLSIGN_LENGTH 5       // Change length to match your callsign but remember the LCD isn't very wide!
 
@@ -163,7 +179,23 @@
 #define SWR_METER      1   // Supports SWR meter with bridge on A6/A7 (LQPF ATMEGA328P) by Alain, K1FM, see: https://groups.io/g/ucx/message/6262 and https://groups.io/g/ucx/message/6361
 #endif
 
-#ifdef BLACK_BRICK
+//***************** TRUSDX FEATURES
+#if defined(TRUSDX)
+
+//#define LCD_I2C        1   // LCD with I2C (PCF8574 module          ), connect SDA (PD2), SCL (PD3), NOTE that this display is pretty slow
+
+#define OLED_SSD1306     1   // OLED display (SSD1306 128x32 or 128x64), connect SDA (PD2), SCL (PD3)
+//#define OLED_SH1106    1   // OLED display (SH1106 1.3" inch display), connect SDA (PD2), SCL (PD3), NOTE that this display is pretty slow
+
+#define SWR_METER        1   // Supports SWR meter with bridge on A6/A7 (LQPF ATMEGA328P) by Alain, K1FM, see: https://groups.io/g/ucx/message/6262 and https://groups.io/g/ucx/message/6361
+
+#endif
+//*****************
+
+#define LPF_SWITCHING_DL2MAN_USDX_REV3 1    // Default
+//#define LPF_SWITCHING_DL2MAN_USDX_REV3_NOLATCH 1    // NOTE: CHANGE IF THIS VERSION LATCHES
+
+#if defined(BLACK_BRICK)
 #define SWR_METER      1   // Supports SWR meter with bridge on A6/A7 (LQPF ATMEGA328P) by Alain, K1FM, see: https://groups.io/g/ucx/message/6262 and https://groups.io/g/ucx/message/6361
 #endif
 
@@ -177,8 +209,10 @@
 // If short of memory on compile and not using Spectrum display, disable CAT_XO_CMD:- Like this:-> //#define CAT_XO_CMD
 #ifdef CAT
 #define CAT_TX_CMD          1  // GW8RDI mod - added - Send TX and RX status CAT cmds as PTT is pressed and released
+#ifndef TRUSDX
 #define CAT_XO_CMD          1  // GW8RDI mod - added - Set TX offset freq. for Quantum Spectrum module from QuantumSDR.com
 // Note: to use CAT_XO_CMD, RIT_ENABLE must also be enabled.
+#endif
 #endif
 
 // Lines below NEEDED FOR CW, removed to make space for CAT
@@ -241,15 +275,17 @@
 #endif
 #endif
 
-// GW8RDI NOTE: Enable to have battery voltage shown on the LCD. The problem with the standard code is that it switches the ADC VREF to a 5V to read the bat, V, this causes some noise on the IQ sampling which enters the audio.
+// GW8RDI NOTE: Enable to have battery voltage shown on the LCD.
+// GW8RDI WARNING!!! The problem with the original code is that it switches the ADC VREF up to 5V to read the bat, V, this causes some noise on the IQ sampling which enters the audio,
+//  and can interfere with the reading of buttons which are sensed through an ADC.
 // A better solution is to simply use a 2 resistor voltage divider and not change VREF, calculating the bar. voltage based on the res. divider ration. Alternatively, only show voltage in a menu function.  todo - change code.
-#define VSS_METER      1   // Supports Vss measurement (as s-meter option), requires resistor of 1M between 12V and pin 26 (PC3)
+//#define VSS_METER      1   // Supports Vss measurement (as s-meter option), requires resistor of 1M between 12V and pin 26 (PC3)
 
 //#define QCX            1   // Supports older (non-SDR) QCX HW modifications (QCX, QCX-SSB, QCX-DSP with I/Q alignment-feature)
 //#define OLED_SSD1306   1   // OLED display (SSD1306 128x32 or 128x64), connect SDA (PD2), SCL (PD3)
 //#define OLED_SH1106    1   // OLED display (SH1106 1.3" inch display), connect SDA (PD2), SCL (PD3), NOTE that this display is pretty slow
 //#define LCD_I2C        1   // LCD with I2C (PCF8574 module          ), connect SDA (PD2), SCL (PD3), NOTE that this display is pretty slow
-#define LPF_SWITCHING_DL2MAN_USDX_REV3           1   // Enable 8-band filter bank switching:     latching relays wired to a TCA/PCA9555 GPIO extender on the PC4/PC5 I2C bus; relays are using IO0.0 as common (ground), IO1.0..7 used by the individual latches K0-7 switching respectively LPFs for 10m, 15m, 17m, 20m, 30m, 40m, 60m, 80m
+//#define LPF_SWITCHING_DL2MAN_USDX_REV3           1   // Enable 8-band filter bank switching:     latching relays wired to a TCA/PCA9555 GPIO extender on the PC4/PC5 I2C bus; relays are using IO0.0 as common (ground), IO1.0..7 used by the individual latches K0-7 switching respectively LPFs for 10m, 15m, 17m, 20m, 30m, 40m, 60m, 80m
 //#define LPF_SWITCHING_DL2MAN_USDX_REV3_NOLATCH 1   // Enable 8-band filter bank switching: non-latching relays wired to a TCA/PCA9555 GPIO extender on the PC4/PC5 I2C bus; relays are using IO0.0 as common (ground), IO1.0..7 used by the individual latches K0-7 switching respectively LPFs for 10m, 15m, 17m, 20m, 30m, 40m, 60m, 80m. Enable this if you are using 8-band non-latching version for the relays, the radio will draw extra 15mA current but will work ity any relay (Tnx OH2UDS/TA7W Baris)
 //#define LPF_SWITCHING_DL2MAN_USDX_REV2         1   // Enable 5-band filter bank switching:     latching relays wired to a TCA/PCA9555 GPIO extender on the PC4/PC5 I2C bus; relays are using IO0.1 as common (ground), IO0.3, IO0.5, IO0.7, IO1.1, IO1.3 used by the individual latches K1-5 switching respectively LPFs for 20m, 30m, 40m, 60m, 80m
 //#define LPF_SWITCHING_DL2MAN_USDX_REV2_BETA    1   // Enable 5-band filter bank switching:     latching relays wired to a PCA9539PW   GPIO extender on the PC4/PC5 I2C bus; relays are using IO0.1 as common (ground), IO0.3, IO0.5, IO0.7, IO1.1, IO1.3 used by the individual latches K1-5 switching respectively LPFs for 20m, 30m, 40m, 60m, 80m
@@ -406,9 +442,11 @@ ssb_cap=1; dsp_cap=2;
 #if !(defined(ARDUINO_ARCH_AVR))
 #error "Unsupported architecture, select Arduino IDE > Tools > Board > Arduino AVR Boards > Arduino Uno."
 #endif
+
 #if(F_CPU != 16000000)
 #error "Unsupported clock frequency, Arduino IDE must specify 16MHz clock; alternate crystal frequencies may be specified with F_MCU."
 #endif
+
 #undef F_CPU
 #define F_CPU 20007000  // Actual crystal frequency of 20MHz XTAL1, note that this declaration is just informative and does not correct the timing in Arduino functions like delay(); hence a 1.25 factor needs to be added for correction.
 #ifndef F_MCU
@@ -4624,6 +4662,7 @@ void calibrate_iq()
 
 uint8_t prev_bandval = 3;
 uint8_t bandval = 3;
+
 #define N_BANDS 11  // See KEEP_BAND_DATA if more than 9 bands required.
 
 #ifdef CW_FREQS_QRP
@@ -4643,7 +4682,9 @@ uint8_t prev_stepsize[] = { STEP_1k, STEP_500 }; //default stepsize for resp. SS
 
 
 #ifdef KEEP_BAND_DATA  // G8RDI mod - Up to 9 bands are supported of 11. To increase change code.
+
 #define BANDCOUNT N_BANDS-2
+
 static int32_t freq_last[BANDCOUNT];  // 0-8 Last freq used on each band
 //static uint8_t mode_last[] = {LSB, LSB, LSB, LSB, USB, USB, USB, USB, USB};  // Last mode used
 static uint8_t mode_last[BANDCOUNT];  // Last mode used
@@ -6463,8 +6504,13 @@ void loop()
 				bandval--;    //  G8RDI mod to make last freq change control and change dir
 #endif
 #endif          
-			///if(bandval >= N_BANDS) bandval = 0;
-			if (bandval >= (N_BANDS - 1)) bandval = 1;  // excludes 6m
+
+#ifdef TRUSDX
+			if (bandval >= (N_BANDS - 5))
+#else
+			if (bandval >= (N_BANDS - 1))
+#endif
+        bandval = 1;  // excludes 6m
 			else
 				if (bandval < 1) bandval = N_BANDS - 2;  // excludes 160m  // G8RDI mod - added
 
