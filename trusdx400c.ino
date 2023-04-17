@@ -77,7 +77,7 @@ Global variables use 1559 bytes (76%) of dynamic memory, leaving 489 bytes for l
 //                               Re-coded KEEP_BAND_DATA switch statements which freed 328 bytes!!
 //  2023/04/11 - Release 4.00b : Fixed CAT mode change to allow it to select AM and FM, AM important to correctly track IQ flip. Also commented-out redundant BE | DC for mode change, as now used for directional band change.
 //                               RIT mode now allows mode to be changed.
-//  2023/04/17 - Release 4.00c : Ammended configuration for TRUSDX clone so that latched-relay band switching and SWR selection is included.
+//  2023/04/17 - Release 4.00c : (updated) Ammended configuration for TRUSDX clone so that latched-relay band switching and SWR selection is included.
 
 //  : Added new post mag IQ filter, added BlackBrick config.
 //  : todo see "// xyzzy Test with i_d"
@@ -128,7 +128,9 @@ Global variables use 1559 bytes (76%) of dynamic memory, leaving 489 bytes for l
 #define BACKLIGHT_PIN 0x08
 #endif
 
+#ifndef TRUSDX
 #define KEEP_BAND_DATA 1        // Maintain last freq and mode set on each band - GW8RDI mod
+#endif
 
 #define SHOW_USB_LSB_CW_ONLY 1  // If defined, Menu will only cycle thro these 3 modes
 
@@ -155,7 +157,8 @@ Global variables use 1559 bytes (76%) of dynamic memory, leaving 489 bytes for l
 
 //#define MY_PREFIX ""  // No prefix, use this line by removing the //, add below to replica line.
 #define MY_PREFIX ""    // Add visiting country prefix here
-#define MY_NAME "ROB"
+
+#define MY_NAME "ROB"   // <---- *** ADD YOUR NAME HERE FOR CW MESSAGES
 #endif
 #define CALLSIGN_LENGTH 5       // Change length to match your callsign but remember the LCD isn't very wide!
 
@@ -174,11 +177,21 @@ Global variables use 1559 bytes (76%) of dynamic memory, leaving 489 bytes for l
 #define SWR_METER      1   // Supports SWR meter with bridge on A6/A7 (LQPF ATMEGA328P) by Alain, K1FM, see: https://groups.io/g/ucx/message/6262 and https://groups.io/g/ucx/message/6361
 #endif
 
+//***************** TRUSDX FEATURES
 #if defined(TRUSDX)
-#define LPF_SWITCHING_DL2MAN_USDX_REV3 1
-//#define LPF_SWITCHING_DL2MAN_USDX_REV3_NOLATCH 1    // NOTE: CHANGE IF THIS MODEL
-#define SWR_METER      1   // Supports SWR meter with bridge on A6/A7 (LQPF ATMEGA328P) by Alain, K1FM, see: https://groups.io/g/ucx/message/6262 and https://groups.io/g/ucx/message/6361
+
+//#define LCD_I2C        1   // LCD with I2C (PCF8574 module          ), connect SDA (PD2), SCL (PD3), NOTE that this display is pretty slow
+
+#define OLED_SSD1306     1   // OLED display (SSD1306 128x32 or 128x64), connect SDA (PD2), SCL (PD3)
+//#define OLED_SH1106    1   // OLED display (SH1106 1.3" inch display), connect SDA (PD2), SCL (PD3), NOTE that this display is pretty slow
+
+#define SWR_METER        1   // Supports SWR meter with bridge on A6/A7 (LQPF ATMEGA328P) by Alain, K1FM, see: https://groups.io/g/ucx/message/6262 and https://groups.io/g/ucx/message/6361
+
 #endif
+//*****************
+
+#define LPF_SWITCHING_DL2MAN_USDX_REV3 1    // Default
+//#define LPF_SWITCHING_DL2MAN_USDX_REV3_NOLATCH 1    // NOTE: CHANGE IF THIS VERSION LATCHES
 
 #if defined(BLACK_BRICK)
 #define SWR_METER      1   // Supports SWR meter with bridge on A6/A7 (LQPF ATMEGA328P) by Alain, K1FM, see: https://groups.io/g/ucx/message/6262 and https://groups.io/g/ucx/message/6361
@@ -194,8 +207,10 @@ Global variables use 1559 bytes (76%) of dynamic memory, leaving 489 bytes for l
 // If short of memory on compile and not using Spectrum display, disable CAT_XO_CMD:- Like this:-> //#define CAT_XO_CMD
 #ifdef CAT
 #define CAT_TX_CMD          1  // GW8RDI mod - added - Send TX and RX status CAT cmds as PTT is pressed and released
+#ifndef TRUSDX
 #define CAT_XO_CMD          1  // GW8RDI mod - added - Set TX offset freq. for Quantum Spectrum module from QuantumSDR.com
 // Note: to use CAT_XO_CMD, RIT_ENABLE must also be enabled.
+#endif
 #endif
 
 // Lines below NEEDED FOR CW, removed to make space for CAT
@@ -262,13 +277,13 @@ Global variables use 1559 bytes (76%) of dynamic memory, leaving 489 bytes for l
 // GW8RDI WARNING!!! The problem with the original code is that it switches the ADC VREF up to 5V to read the bat, V, this causes some noise on the IQ sampling which enters the audio,
 //  and can interfere with the reading of buttons which are sensed through an ADC.
 // A better solution is to simply use a 2 resistor voltage divider and not change VREF, calculating the bar. voltage based on the res. divider ration. Alternatively, only show voltage in a menu function.  todo - change code.
-#define VSS_METER      1   // Supports Vss measurement (as s-meter option), requires resistor of 1M between 12V and pin 26 (PC3)
+//#define VSS_METER      1   // Supports Vss measurement (as s-meter option), requires resistor of 1M between 12V and pin 26 (PC3)
 
 //#define QCX            1   // Supports older (non-SDR) QCX HW modifications (QCX, QCX-SSB, QCX-DSP with I/Q alignment-feature)
 //#define OLED_SSD1306   1   // OLED display (SSD1306 128x32 or 128x64), connect SDA (PD2), SCL (PD3)
 //#define OLED_SH1106    1   // OLED display (SH1106 1.3" inch display), connect SDA (PD2), SCL (PD3), NOTE that this display is pretty slow
 //#define LCD_I2C        1   // LCD with I2C (PCF8574 module          ), connect SDA (PD2), SCL (PD3), NOTE that this display is pretty slow
-#define LPF_SWITCHING_DL2MAN_USDX_REV3           1   // Enable 8-band filter bank switching:     latching relays wired to a TCA/PCA9555 GPIO extender on the PC4/PC5 I2C bus; relays are using IO0.0 as common (ground), IO1.0..7 used by the individual latches K0-7 switching respectively LPFs for 10m, 15m, 17m, 20m, 30m, 40m, 60m, 80m
+//#define LPF_SWITCHING_DL2MAN_USDX_REV3           1   // Enable 8-band filter bank switching:     latching relays wired to a TCA/PCA9555 GPIO extender on the PC4/PC5 I2C bus; relays are using IO0.0 as common (ground), IO1.0..7 used by the individual latches K0-7 switching respectively LPFs for 10m, 15m, 17m, 20m, 30m, 40m, 60m, 80m
 //#define LPF_SWITCHING_DL2MAN_USDX_REV3_NOLATCH 1   // Enable 8-band filter bank switching: non-latching relays wired to a TCA/PCA9555 GPIO extender on the PC4/PC5 I2C bus; relays are using IO0.0 as common (ground), IO1.0..7 used by the individual latches K0-7 switching respectively LPFs for 10m, 15m, 17m, 20m, 30m, 40m, 60m, 80m. Enable this if you are using 8-band non-latching version for the relays, the radio will draw extra 15mA current but will work ity any relay (Tnx OH2UDS/TA7W Baris)
 //#define LPF_SWITCHING_DL2MAN_USDX_REV2         1   // Enable 5-band filter bank switching:     latching relays wired to a TCA/PCA9555 GPIO extender on the PC4/PC5 I2C bus; relays are using IO0.1 as common (ground), IO0.3, IO0.5, IO0.7, IO1.1, IO1.3 used by the individual latches K1-5 switching respectively LPFs for 20m, 30m, 40m, 60m, 80m
 //#define LPF_SWITCHING_DL2MAN_USDX_REV2_BETA    1   // Enable 5-band filter bank switching:     latching relays wired to a PCA9539PW   GPIO extender on the PC4/PC5 I2C bus; relays are using IO0.1 as common (ground), IO0.3, IO0.5, IO0.7, IO1.1, IO1.3 used by the individual latches K1-5 switching respectively LPFs for 20m, 30m, 40m, 60m, 80m
