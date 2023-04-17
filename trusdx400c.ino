@@ -9,13 +9,15 @@
 
 // GW8RDI IMPORTANT NOTES: ***   DO NOT RUSH - READ THE NOTES BELOW SEVERAL TIMES!
 
+// *** THIS OPEN SOFTWARE IS FULLY SUPPORTED FREE OF COST BY GW8RDI and others ***
+
 /*
 Comfigured for (tr)usdx clone:
 
 Compile results 17 April 2023
-"C:\\Users\\Usuario\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\avr-gcc\\7.3.0-atmel3.6.1-arduino7/bin/avr-size" -A "C:\\Users\\Usuario\\AppData\\Local\\Temp\\arduino\\sketches\\E2EA2B2706C6565E78832871CCAA7296/usdx.ino.elf"
-Sketch uses 31922 bytes (98%) of program storage space. Maximum is 32256 bytes.
-Global variables use 1559 bytes (76%) of dynamic memory, leaving 489 bytes for local variables. Maximum is 2048 bytes.
+"C:\\Users\\User\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\avr-gcc\\7.3.0-atmel3.6.1-arduino7/bin/avr-size" -A "C:\\Users\\Usuario\\AppData\\Local\\Temp\\arduino\\sketches\\E2EA2B2706C6565E78832871CCAA7296/usdx.ino.elf"
+Sketch uses 32244 bytes (99%) of program storage space. Maximum is 32256 bytes.
+Global variables use 1499 bytes (73%) of dynamic memory, leaving 549 bytes for local variables. Maximum is 2048 bytes.
 */
 
 // *** ISP DATA CORRUPTION WARNING1!!   ALWAYS REMOVE C24 (C27?) (or as marked) it's a 10nF on the ISP HEADER'S MOSI line (PA ctrl out) (PB3) of the ISP header,
@@ -33,9 +35,9 @@ Global variables use 1559 bytes (76%) of dynamic memory, leaving 489 bytes for l
 
 /*  WELCOME TO THE OPEN SOURCE USDX PROJECT 2022 AND ONWARDS!
 
-	This version is for all uSDX/uSDR transceivers, release numbers are 2.XXx.
+	This version is for all uSDX/uSDR transceivers, release numbers are 4.XXx.
 
-	Compiled and programmed using Arudino IDE 2.0.3, available from www.arduinio.cc
+	Compiled and programmed using Arudino IDE 2.0.4, available from www.arduinio.cc
 
 	To support the add-on module for uSDX with powerful DSP processor, version numbers will be 3.XXx.
 
@@ -4658,7 +4660,12 @@ void calibrate_iq()
 
 uint8_t prev_bandval = 3;
 uint8_t bandval = 3;
+
+#ifndef TRUSDX
+#define N_BANDS 5  // See KEEP_BAND_DATA for details if chnages needed
+#else
 #define N_BANDS 11  // See KEEP_BAND_DATA if more than 9 bands required.
+#endif
 
 #ifdef CW_FREQS_QRP
 uint32_t band[N_BANDS] = { /*472000,*/ 1810000, 3560000, 5351500, 7030000, 10106000, 14060000, 18096000, 21060000, 24906000, 28060000, 50096000/*, 70160000, 144060000*/ };  // CW QRP freqs
