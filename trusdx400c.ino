@@ -9,7 +9,7 @@
 
 // GW8RDI IMPORTANT NOTES: ***   DO NOT RUSH - READ THE NOTES BELOW SEVERAL TIMES!
 
-// *** THIS OPEN SOFTWARE IS FULLY SUPPORTED FREE OF COST BY GW8RDI and others ***
+// *** THIS OPEN SOFTWARE IS FULLY SUPPORTED* FREE OF COST BY GW8RDI and others ***
 
 /*
 Comfigured for (tr)usdx clone:
@@ -79,7 +79,7 @@ Global variables use 1499 bytes (73%) of dynamic memory, leaving 549 bytes for l
 //                               Re-coded KEEP_BAND_DATA switch statements which freed 328 bytes!!
 //  2023/04/11 - Release 4.00b : Fixed CAT mode change to allow it to select AM and FM, AM important to correctly track IQ flip. Also commented-out redundant BE | DC for mode change, as now used for directional band change.
 //                               RIT mode now allows mode to be changed.
-//  2023/04/17 - Release 4.00c : (updated) Ammended configuration for TRUSDX clone so that latched-relay band switching and SWR selection is included.
+//  2023/04/17 - Release 4.00c : (UPDATE-2) Ammended configuration for TRUSDX clone so that latched-relay band switching and SWR selection is included.
 
 //  : Added new post mag IQ filter, added BlackBrick config.
 //  : todo see "// xyzzy Test with i_d"
@@ -4661,11 +4661,7 @@ void calibrate_iq()
 uint8_t prev_bandval = 3;
 uint8_t bandval = 3;
 
-#ifndef TRUSDX
-#define N_BANDS 5  // See KEEP_BAND_DATA for details if chnages needed
-#else
 #define N_BANDS 11  // See KEEP_BAND_DATA if more than 9 bands required.
-#endif
 
 #ifdef CW_FREQS_QRP
 uint32_t band[N_BANDS] = { /*472000,*/ 1810000, 3560000, 5351500, 7030000, 10106000, 14060000, 18096000, 21060000, 24906000, 28060000, 50096000/*, 70160000, 144060000*/ };  // CW QRP freqs
@@ -4684,7 +4680,9 @@ uint8_t prev_stepsize[] = { STEP_1k, STEP_500 }; //default stepsize for resp. SS
 
 
 #ifdef KEEP_BAND_DATA  // G8RDI mod - Up to 9 bands are supported of 11. To increase change code.
+
 #define BANDCOUNT N_BANDS-2
+
 static int32_t freq_last[BANDCOUNT];  // 0-8 Last freq used on each band
 //static uint8_t mode_last[] = {LSB, LSB, LSB, LSB, USB, USB, USB, USB, USB};  // Last mode used
 static uint8_t mode_last[BANDCOUNT];  // Last mode used
@@ -6504,8 +6502,13 @@ void loop()
 				bandval--;    //  G8RDI mod to make last freq change control and change dir
 #endif
 #endif          
-			///if(bandval >= N_BANDS) bandval = 0;
-			if (bandval >= (N_BANDS - 1)) bandval = 1;  // excludes 6m
+
+#ifdef TRUSDX
+			if (bandval >= (N_BANDS - 5))
+#else
+			if (bandval >= (N_BANDS - 1))
+#endif
+        bandval = 1;  // excludes 6m
 			else
 				if (bandval < 1) bandval = N_BANDS - 2;  // excludes 160m  // G8RDI mod - added
 
