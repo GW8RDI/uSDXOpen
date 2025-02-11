@@ -728,8 +728,7 @@ public:  // LCD1602 display in 4-bit mode, RS is pull-up and kept low when idle 
 		else
 			PORTD &= ~BACKLIGHT_PIN;   // Backlight control - G8RDI MOD
 #ifdef _SERIAL
-		//UCSR0B |= (1<<RXEN0)|(1<<TXEN0); if(!vox) if(cat_active){ DDRC &= ~(1<<2); } // Enable serial port, disable PD0, PD1; disable PC2
-		UCSR0B |= (1 << RXEN0) | (1 << TXEN0); if (!vox) if (cat_active) { PORTC &= ~(1 << 2); } // Enable serial port, disable PD0, PD1; PC2 LOW to prevent CAT TX disruption via MIC input
+                UCSR0B |= (1 << RXEN0) | (1 << TXEN0); if (!vox) if (cat_active) { PORTC &= ~(1 << 2); DDRC &= ~(1 << 2); } // Enable serial port, disable PD0, PD1; PC2 LOW to prevent CAT TX disruption via MIC input
 #endif
 		interrupts();
 	}
