@@ -5358,6 +5358,9 @@ void analyseCATcmd()    // Supported Kenwood TS-480 protocol CAT commands
 	else if ((CATcmd[0] == 'V') && (CATcmd[1] == 'X') && (CATcmd[2] != ';'))
 		Command_VX(CATcmd[2]);
 
+	else if ((CATcmd[0] == 'F') && (CATcmd[1] == 'W') && (CATcmd[2] == ';'))
+		Command_FW();
+
 	/*
 	The following CAT extensions are available to support remote operatons. Use a baudrate of 115200 when enabling CAT_STREAMING config switch:
 
@@ -5683,6 +5686,19 @@ void Command_PS()
 
 void Command_PS1()
 {
+}
+
+void Command_FW()
+{
+#ifdef _SERIAL
+	if (!cat_active) return;
+#endif
+	char Catbuffer[32];
+
+	const int filt_val[N_FILT + 1] = { 3600, 3000, 2400, 1800, 500, 200, 100, 50 };
+
+	sprintf(Catbuffer, "FW%04u;", filt_val[filt]);
+	Serial.print(Catbuffer);
 }
 #endif //CAT
 
